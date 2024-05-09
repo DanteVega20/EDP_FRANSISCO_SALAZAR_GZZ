@@ -1,7 +1,6 @@
 import datetime
 import time
 import sys 
-from tabulate import tabulate
 import pandas as pd
 import sqlite3 as sql
 from sqlite3 import Error
@@ -742,8 +741,14 @@ while True:
                                         SELECT c.folio, p.clave, p.nombres, p.apellidoPaterno, p.apellidoMaterno, c.fechaCita
                                         FROM Citas c
                                         INNER JOIN Pacientes p ON c.clave_paciente = p.clave
-                                        WHERE c.fechaCita > datetime('now')
-                                    """)
+                                        WHERE c.fechaCita > datetime('now') 
+                                        AND c.edad IS NULL 
+                                        AND c.peso IS NULL 
+                                        AND c.estatura IS NULL 
+                                        AND c.horaLlegada IS NULL 
+                                        AND c.presionArterial IS NULL 
+                                        AND c.diagnostico  IS NULL
+                                        """)
                                     citas_pendientes = mi_cursor.fetchall()
                                     if citas_pendientes: 
                                         print("CITAS PENDIENTES")
@@ -788,15 +793,15 @@ while True:
                                                 if cancelar == '*':
                                                     folio_eliminar = '*'
                                                     break
+                                        if folio_eliminar == '*':
+                                            print('Se cancelo la operación. \nRegresando al menu...')
+                                            break
                                     else:
                                         print('No hay citas pendientes')
                             except sql.Error as e:
                                 print(f'ERROR. En la Base de datos: {e}')
                             finally:
                                 conn.close()
-                            if folio_eliminar == '*':
-                                print('Se cancelo la operación. \nRegresando al menu...')
-                                break
                             break
                     if opcion_cancelacion == 3:
                         print('Saliendo del submenu')
